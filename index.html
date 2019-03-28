@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Календарь</title>
+  <link href="https://fonts.googleapis.com/css?family=Montserrat:400,500,600" rel="stylesheet">
+  <link href="/css/datepicker.min.css" rel="stylesheet" type="text/css">
+  <link href="/css/style.css" rel="stylesheet" type="text/css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+  <script src="/js/datepicker.min.js"></script>
+</head>
+<body>
+  <div class="calendar">
+    <div class="calendar__controls">
+      <button class="calendar__btn calendar__btn_prev" data-direction="0"></button>
+      <button class="calendar__btn calendar__btn_next" data-direction="1"></button>
+    </div>
+    <div class="calendar__year">
+      <div class="calendar__month"></div>
+      <div class="calendar__month calendar__month_active" data-calendar="init"></div>
+      <div class="calendar__month"></div>
+    </div>
+    <div class="calendar__events"></div>
+  </div>
+
+  <script src="/js/script.js"></script>
+
+</body>
+</html>
