@@ -158,6 +158,11 @@
   max-height: 100%;
 }
 
+.event_selected a {
+  pointer-events: none;
+  border-bottom-color: #FF9201;
+}
+
 .datepicker {
   width: 100%;
   height: 410px;
@@ -249,36 +254,6 @@
 .datepicker--cell.-event- {
   z-index: 3;
 }
-/*
-.datepicker--cell.-event-::before {
-  position: absolute;
-  z-index: -1;
-  left: 50%;
-  top: 50%;
-  transform: translate(-50%,-50%);
-  width: 32px;
-  height: 32px;
-  content: '';
-  background: #ffffff;
-  border-radius: 50%;
-  box-shadow: 0 0 0 2px #FF9201;
-}
-
-.datepicker--cell.-event-.-event--two-::before {
-  box-shadow:
-    0 0 0 2px #FF9201,
-    4px 0 0 1px #FFFEF2,
-    5px 0 0 2px #FFC531;
-}
-
-.datepicker--cell.-event-.-event--alot-::before {
-  box-shadow:
-    0 0 0 2px #FF9201,
-    4px 0 0 1px #FFFEF2,
-    5px 0 0 2px #FFC531,
-    9px 0 0 1px #FFFEF2,
-    10px 0 0 2px #FFC531;
-} */
 
 .datepicker--cell-event {
   position: absolute;
@@ -294,6 +269,7 @@
   box-shadow: 0 0 0 2px #FF9201;
   font-size: 0;
   pointer-events: none;
+  transition: all .2s;
 }
 
 .datepicker--cell-event:nth-child(2) {
@@ -316,20 +292,37 @@
     0 0 0 1px #FFC531;
 }
 
-/* .datepicker--cell-event:nth-child(1n + 3):not(.datepicker--cell-event) {
-  display: none;
-} */
-
-.datepicker--cell-event[data-duration="2"]::before {
+.datepicker--cell-event::before,
+.datepicker--cell-event::after {
   position: absolute;
   z-index: -2;
   left: -1px;
   top: -1px;
   height: calc(100% + 2px);
-  width: calc(260% + 2px);
+  width: calc(100% + 2px);
   background: transparent;
   content: '';
   box-shadow:
     0 0 0 1px #FFC531;
   border-radius: 50px;
+  opacity: 0;
+  transition: all .5s, opacity .2s;
+}
+
+.datepicker--cell-event_active::before {
+  opacity: 1;
+}
+
+.datepicker--cell-event_active[data-days="2"]::before {
+  height: calc(100% + 2px);
+  width: calc(260% + 2px);
+}
+
+.datepicker--cell.-weekend- + .datepicker--cell.-weekend- .datepicker--cell-event::before {
+  height: calc(100% + 2px);
+  width: calc(100% + 2px);
+}
+
+.datepicker--cell-content_selected .datepicker--cell-event:not(.datepicker--cell-active) {
+  margin-left: 0;
 }
