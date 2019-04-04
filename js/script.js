@@ -44,6 +44,8 @@ var optionsCalendar = {
     months: 'yyyy',
     years: 'yyyy1 - yyyy2'
   },
+
+  // Функция обработки ячеек при создании календаря
   onRenderCell: function onRenderCell(date, cellType) {
     var y = date.getFullYear(),
         m = date.getMonth(),
@@ -60,6 +62,9 @@ var optionsCalendar = {
       }
     } catch (e) {}
   },
+
+
+  // Функция обработки событий при выборе дня
   onSelect: function onSelect(formattedDate, date, inst) {
     if (!date) return;
 
@@ -156,14 +161,38 @@ $(document).on('click', '.event a', function (e) {
   var eventTarget = $(this).parent(),
       days = $(eventTarget).data('days'),
       eventId = $(eventTarget).attr('event-id'),
-      eventCell = $('.calendar__month_active [event-id="' + eventId + '"]');
+      eventContent = $('.calendar__month_active [event-id="' + eventId + '"]'),
+      eventCell = $(eventContent).closest('.datepicker--cell'),
+      eventWeekend = $(eventCell).hasClass('-weekend-');
+
+  $('.datepicker--cell-event--duration').remove();
+
+  if (days > 1) {
+    var widthCell = $(eventContent).width();
+
+    $(eventCell).find('.datepicker--cell-content').append('<span class="datepicker--cell-event--duration" data-duration="0"></span>');
+
+    $(eventCell).nextAll().each(function (i, cell) {
+      if (i === days - 1) return false;
+
+      var eventDutaion = '<span class="datepicker--cell-event--duration" data-duration="' + (i + 1) + '"></span>';
+
+      if ($(cell).find('.datepicker--cell-content').get(0)) {
+        $(cell).find('.datepicker--cell-content').append(eventDutaion);
+      } else {
+        $(cell).append(eventDutaion);
+      }
+    });
+
+    $('[data-duration]').last().attr('data-duration', 'end');
+  }
 
   $('.event_selected').removeClass('event_selected');
-  $('.datepicker--cell-content_selected').removeClass('datepicker--cell-content_selected');
+  $('.datepicker--cell-content_select').removeClass('datepicker--cell-content_selected');
   $('.datepicker--cell-event_active').removeClass('datepicker--cell-event_active');
 
   $(eventTarget).addClass('event_selected');
-  $(eventCell).parent().addClass('datepicker--cell-content_selected');
+  $(eventContent).parent().addClass('datepicker--cell-content_selected');
 
-  if (days != undefined) $(eventCell).addClass('datepicker--cell-event_active');
+  if (days != undefined) $(eventContent).addClass('datepicker--cell-event_active');
 });

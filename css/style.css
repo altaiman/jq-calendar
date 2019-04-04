@@ -1,8 +1,9 @@
 .calendar {
   position: relative;
-  width: 1200px;
+  width: 1190px;
+  height: 440px;
   max-width: 100%;
-  margin: 100px auto;
+  margin: 0 auto;
 }
 
 .calendar * {
@@ -13,12 +14,13 @@
   display: flex;
   justify-content: space-between;
   width: 100%;
+  height: 100%;
 }
 
 .calendar__month {
   position: relative;
   z-index: 1;
-  padding: 30px 20px;
+  padding: 20px;
   width: 33.333%;
   background: #FFFEF2;
 }
@@ -81,9 +83,9 @@
   position: absolute;
   z-index: 3;
   left: 50%;
-  top: 43px;
+  top: 33px;
   transform: translateX(-50%);
-  width: 340px;
+  width: 28%;
   max-width: 100vw;
   padding: 0 10px;
   display: flex;
@@ -135,6 +137,7 @@
   transition: all .2s;
   margin: 0 10px;
   padding-bottom: 3px;
+  max-width: calc(100% - 68px);
 }
 
 .event a:hover {
@@ -143,19 +146,23 @@
 
 .event__img {
   position: relative;
+  z-index: 1;
   width: 48px;
   height: 48px;
   border-radius: 50%;
   overflow: hidden;
+  background: white;
 }
 
 .event__img img {
   position: absolute;
+  z-index: 3;
   left: 50%;
   top: 50%;
   transform: translate(-50%,-50%);
   max-width: 100%;
   max-height: 100%;
+  font-size: 0;
 }
 
 .event_selected a {
@@ -211,13 +218,13 @@
 }
 
 .datepicker--cells {
-  height: 86.485%;
+  height: 85%;
 }
 
 .datepicker--cell {
   position: relative;
   z-index: 1;
-  height: 16%;
+  height: 10%;
   font-size: 14px;
   font-weight: 500;
   transition: all .1s;
@@ -282,6 +289,10 @@
     0 0 0 1px #FFC531;
 }
 
+.datepicker--cell-event:nth-child(2) .datepicker--cell-event--duration {
+  left: -4px;
+}
+
 .datepicker--cell-event:nth-child(3) {
   width: 34px;
   height: 34px;
@@ -292,37 +303,32 @@
     0 0 0 1px #FFC531;
 }
 
-.datepicker--cell-event::before,
-.datepicker--cell-event::after {
+.datepicker--cell-event:nth-child(1n + 3) .datepicker--cell-event--duration {
+  left: -8px;
+}
+
+.datepicker--cell-event--duration {
   position: absolute;
   z-index: -2;
-  left: -1px;
-  top: -1px;
-  height: calc(100% + 2px);
-  width: calc(100% + 2px);
-  background: transparent;
-  content: '';
-  box-shadow:
-    0 0 0 1px #FFC531;
-  border-radius: 50px;
-  opacity: 0;
-  transition: all .5s, opacity .2s;
+  left: 15%;
+  top: -2px;
+  width: 100%;
+  height: 34px;
+  border: 1px solid #FFC531;
+  border-right-width: 0;
+  border-left-width: 0;
 }
 
-.datepicker--cell-event_active::before {
-  opacity: 1;
+.datepicker--cell-event--duration[data-duration="0"],
+.datepicker--cell.-weekend- + .datepicker--cell:not(.-weekend-) .datepicker--cell-event--duration {
+  border-left-width: 1px;
+  border-radius: 50px 0 0 50px;
 }
 
-.datepicker--cell-event_active[data-days="2"]::before {
-  height: calc(100% + 2px);
-  width: calc(260% + 2px);
-}
-
-.datepicker--cell.-weekend- + .datepicker--cell.-weekend- .datepicker--cell-event::before {
-  height: calc(100% + 2px);
-  width: calc(100% + 2px);
-}
-
-.datepicker--cell-content_selected .datepicker--cell-event:not(.datepicker--cell-active) {
-  margin-left: 0;
+.datepicker--cell-event--duration[data-duration="end"],
+.datepicker--cell.-weekend- + .-weekend- .datepicker--cell-event--duration {
+  left: auto;
+  right: 15%;
+  border-right-width: 1px;
+  border-radius: 0 50px 50px 0;
 }

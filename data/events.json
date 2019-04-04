@@ -96,6 +96,26 @@
             }
          ]
       },
+      "3": {
+        "6": [
+          {
+            "link": "#3",
+            "name": "Доставка",
+            "img": "https://picsum.photos/300/300",
+            "id": 32,
+            "days": 5
+          }
+        ],
+        "30": [
+          {
+            "link": "#3",
+            "name": "CodefestXXX",
+            "img": "https://picsum.photos/221/221",
+            "id": 102,
+            "days": 10
+          }
+        ]
+      },
       "5": {
          "6": [
             {
