@@ -97,6 +97,15 @@
          ]
       },
       "3": {
+        "2": [
+          {
+            "link": "#3",
+            "name": "Доставка",
+            "img": "https://picsum.photos/101/101",
+            "id": 18,
+            "days": 22
+          }
+        ],
         "6": [
           {
             "link": "#3",
@@ -104,6 +113,33 @@
             "img": "https://picsum.photos/300/300",
             "id": 32,
             "days": 5
+          }
+        ],
+        "7": [
+          {
+            "link": "#3",
+            "name": "Доставка",
+            "img": "https://picsum.photos/211/211",
+            "id": 24,
+            "days": 25
+          }
+        ],
+        "8": [
+          {
+            "link": "#3",
+            "name": "Проверка",
+            "img": "https://picsum.photos/218/218",
+            "id": 29,
+            "days": 8
+          }
+        ],
+        "14": [
+          {
+            "link": "#3",
+            "name": "Тетст-Событие",
+            "img": "https://picsum.photos/222/222",
+            "id": 66,
+            "days": 10
           }
         ],
         "30": [

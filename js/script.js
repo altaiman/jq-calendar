@@ -31,7 +31,8 @@ function eventsCreate(data) {
 // Задаю начальную дату и переменную для новой даты
 var initDate = new Date(),
     newDate = initDate,
-    monthNames = ["Января", "Февраля", "Марта", "Апреля", "Мая", "Июня", "Июля", "Августа", "Сентября", "Октября", "Ноября", "Декабря"];
+    monthNames = ["Января", "Февраля", "Марта", "Апреля", "Мая", "Июня", "Июля", "Августа", "Сентября", "Октября", "Ноября", "Декабря"],
+    locale = $.fn.datepicker.language['ru'];
 
 // Настройки календаря
 var optionsCalendar = {
@@ -49,18 +50,27 @@ var optionsCalendar = {
   onRenderCell: function onRenderCell(date, cellType) {
     var y = date.getFullYear(),
         m = date.getMonth(),
-        d = date.getDate();
+        d = date.getDate(),
+        day = date.getDay();
 
     try {
       if (eventsDate[y][m][d] != undefined) {
 
         return {
-          html: d + ('<div class="datepicker--cell-content" data-date="' + d + ' ' + monthNames[m] + '">' + eventsCreate(eventsDate[y][m][d]) + '</div>'),
+          html: ($('.calendar_wide').get(0) ? d + '<span class="datepicker--cell-dday">' + locale['daysMin'][day] + '</span>' : d) + ('<div class="datepicker--cell-content" data-date="' + d + ' ' + monthNames[m] + '">' + eventsCreate(eventsDate[y][m][d]) + '</div>'),
           classes: '-event-',
           disabled: false
         };
+      } else if ($('.calendar_wide').get(0)) {
+        return {
+          html: d + ('<span class="datepicker--cell-dday">' + locale['daysMin'][day] + '</span>')
+        };
       }
-    } catch (e) {}
+    } catch (e) {
+      return {
+        html: d + ('<span class="datepicker--cell-dday">' + locale['daysMin'][day] + '</span>')
+      };
+    }
   },
 
 
@@ -85,9 +95,23 @@ var optionsCalendar = {
       return false;
     }
 
+    var posTop = $(selectedDay).offset().top - $('.calendar').offset().top,
+        posLeft = $(selectedDay).offset().left - $('.calendar').offset().left;
+
+    var ratio = (($(selectedDay).offset().left - $('.calendar').offset().left * 100) / $(window).width()).toFixed(2);
+
+    $('.calendar__events_right').removeClass('calendar__events_right');
+
+    if (ratio > 0.7) {
+      var offset = $(window).width() - posLeft;
+
+      posLeft = posLeft - $('.calendar__events').width();
+      $('.calendar__events').addClass('calendar__events_right');
+    }
+
     $(eventMessage).empty().css({
-      'top': $(selectedDay).offset().top - $('.calendar').offset().top,
-      'left': $(selectedDay).offset().left - $('.calendar').offset().left
+      'top': posTop,
+      'left': posLeft
     }).append('<span class="calendar__date" data-date="' + d + '" data-month="' + m + '">' + selectedDate + '</span>').append('<ul></ul>');
 
     $(links).each(function (i, item) {
@@ -132,13 +156,24 @@ $('.calendar__btn').on('click', function () {
 
   $('.calendar__month').each(function (i, calendar) {
     $('.datepicker--cell.-selected-').removeClass('-selected-');
+    var month = void 0;
 
     switch (direction) {
       case 0:
         $(calendar).datepicker().data('datepicker').prev();
+        if ($('.calendar_wide').get(0)) {
+          month = locale['months'][$(calendar).data('datepicker').date.getMonth()];
+          $('.calendar__title').text(month);
+        }
+
         break;
       case 1:
         $(calendar).datepicker().data('datepicker').next();
+        if ($('.calendar_wide').get(0)) {
+          month = locale['months'][$(calendar).data('datepicker').date.getMonth()];
+          $('.calendar__title').text(month);
+        }
+
         break;
       default:
         console.error('undefined direction');
@@ -155,44 +190,50 @@ $(document).on('click', function (e) {
   }
 });
 
-$(document).on('click', '.event a', function (e) {
-  e.preventDefault();
+$(document).on({
+  mouseenter: function mouseenter() {
+    var eventTarget = $(this).parent(),
+        days = $(eventTarget).data('days'),
+        eventId = $(eventTarget).attr('event-id'),
+        eventContent = $('.calendar__month_active [event-id="' + eventId + '"]'),
+        eventCell = $(eventContent).closest('.datepicker--cell'),
+        eventWeekend = $(eventCell).hasClass('-weekend-');
 
-  var eventTarget = $(this).parent(),
-      days = $(eventTarget).data('days'),
-      eventId = $(eventTarget).attr('event-id'),
-      eventContent = $('.calendar__month_active [event-id="' + eventId + '"]'),
-      eventCell = $(eventContent).closest('.datepicker--cell'),
-      eventWeekend = $(eventCell).hasClass('-weekend-');
+    if (days > 1) {
+      var widthCell = $(eventContent).width();
 
-  $('.datepicker--cell-event--duration').remove();
+      $(eventCell).find('.datepicker--cell-content').append('<span class="datepicker--cell-event--duration" data-duration="0"></span>');
 
-  if (days > 1) {
-    var widthCell = $(eventContent).width();
+      $(eventCell).nextAll().each(function (i, cell) {
+        if (i === days - 1) return false;
 
-    $(eventCell).find('.datepicker--cell-content').append('<span class="datepicker--cell-event--duration" data-duration="0"></span>');
+        var eventDutaion = '<span class="datepicker--cell-event--duration" data-duration="' + (i + 1) + '"></span>';
 
-    $(eventCell).nextAll().each(function (i, cell) {
-      if (i === days - 1) return false;
+        if ($(cell).find('.datepicker--cell-content').get(0)) {
+          $(cell).find('.datepicker--cell-content').append(eventDutaion);
+        } else {
+          $(cell).append(eventDutaion);
+        }
+      });
 
-      var eventDutaion = '<span class="datepicker--cell-event--duration" data-duration="' + (i + 1) + '"></span>';
+      $('[data-duration]').last().attr('data-duration', 'end');
+    }
 
-      if ($(cell).find('.datepicker--cell-content').get(0)) {
-        $(cell).find('.datepicker--cell-content').append(eventDutaion);
-      } else {
-        $(cell).append(eventDutaion);
-      }
-    });
+    $(eventTarget).addClass('event_hover');
+    $(eventContent).parent().addClass('datepicker--cell-content_selected');
 
-    $('[data-duration]').last().attr('data-duration', 'end');
+    if (days != undefined) $(eventContent).addClass('datepicker--cell-event_active');
+  },
+  mouseleave: function mouseleave() {
+    $('.datepicker--cell-event--duration').remove();
+
+    $('.event_hover').removeClass('event_hover');
+    $('.datepicker--cell-content_select').removeClass('datepicker--cell-content_selected');
+    $('.datepicker--cell-event_active').removeClass('datepicker--cell-event_active');
   }
+}, ".event a");
 
-  $('.event_selected').removeClass('event_selected');
-  $('.datepicker--cell-content_select').removeClass('datepicker--cell-content_selected');
-  $('.datepicker--cell-event_active').removeClass('datepicker--cell-event_active');
-
-  $(eventTarget).addClass('event_selected');
-  $(eventContent).parent().addClass('datepicker--cell-content_selected');
-
-  if (days != undefined) $(eventContent).addClass('datepicker--cell-event_active');
-});
+if ($('.calendar_wide').get(0)) {
+  var month = $('.calendar__month').data('datepicker').date.getMonth();
+  $('.calendar__title').text(locale['months'][month]);
+}
